@@ -10,8 +10,29 @@ android {
         applicationId 'com.epa.akademi'
         minSdk 24
         targetSdk 34
-        versionCode 5
-        versionName '1.4'
+        versionCode 6
+        versionName '1.5'
+    }
+
+    // Sabit imza: anahtar depoda DEĞİL, GitHub Secrets'ta durur (EPA_KEYSTORE_B64, EPA_KEYSTORE_PASS).
+    // Gizli değişkenler yoksa varsayılan hata ayıklama anahtarı kullanılır.
+    def ksPath = System.getenv('EPA_KEYSTORE_PATH')
+    def ksPass = System.getenv('EPA_KEYSTORE_PASS')
+    signingConfigs {
+        if (ksPath && ksPass) {
+            epa {
+                storeFile file(ksPath)
+                storePassword ksPass
+                keyAlias 'epa'
+                keyPassword ksPass
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            if (ksPath && ksPass) signingConfig signingConfigs.epa
+        }
     }
 
     compileOptions {

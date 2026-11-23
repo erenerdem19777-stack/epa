@@ -20,7 +20,14 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
+      - name: İmza anahtarı (gizli değişken varsa)
+        env:
+          KS: ${{ secrets.EPA_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$KS" ]; then echo "$KS" | base64 -d > "$RUNNER_TEMP/epa.keystore"; echo "EPA_KEYSTORE_PATH=$RUNNER_TEMP/epa.keystore" >> "$GITHUB_ENV"; fi
       - name: APK derle
+        env:
+          EPA_KEYSTORE_PASS: ${{ secrets.EPA_KEYSTORE_PASS }}
         run: gradle assembleDebug --no-daemon
       - name: APK'yı yeniden adlandır
         run: cp app/build/outputs/apk/debug/app-debug.apk EPA.apk
