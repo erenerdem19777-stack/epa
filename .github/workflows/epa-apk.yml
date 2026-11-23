@@ -23,8 +23,18 @@ jobs:
       - name: İmza anahtarı (gizli değişken varsa)
         env:
           KS: ${{ secrets.EPA_KEYSTORE_B64 }}
+          KP: ${{ secrets.EPA_KEYSTORE_PASS }}
         run: |
-          if [ -n "$KS" ]; then echo "$KS" | base64 -d > "$RUNNER_TEMP/epa.keystore"; echo "EPA_KEYSTORE_PATH=$RUNNER_TEMP/epa.keystore" >> "$GITHUB_ENV"; fi
+          {
+            echo "EPA_KEYSTORE_B64 uzunluk: ${#KS}"
+            echo "EPA_KEYSTORE_PASS uzunluk: ${#KP}"
+          } > "$RUNNER_TEMP/imza-durumu.txt"
+          if [ -n "$KS" ]; then
+            printf '%s' "$KS" | tr -d ' \r\n' | base64 -d > "$RUNNER_TEMP/epa.keystore" && echo "anahtar dosyası: $(stat -c%s "$RUNNER_TEMP/epa.keystore") bayt" >> "$RUNNER_TEMP/imza-durumu.txt" || echo "anahtar çözülemedi" >> "$RUNNER_TEMP/imza-durumu.txt"
+            if [ -n "$KP" ] && keytool -list -keystore "$RUNNER_TEMP/epa.keystore" -storepass "$KP" >/dev/null 2>&1; then echo "anahtar ve şifre: uyumlu" >> "$RUNNER_TEMP/imza-durumu.txt"; else echo "anahtar ve şifre: UYUMSUZ ya da eksik" >> "$RUNNER_TEMP/imza-durumu.txt"; fi
+            echo "EPA_KEYSTORE_PATH=$RUNNER_TEMP/epa.keystore" >> "$GITHUB_ENV"
+          fi
+          cat "$RUNNER_TEMP/imza-durumu.txt"
       - name: APK derle
         env:
           EPA_KEYSTORE_PASS: ${{ secrets.EPA_KEYSTORE_PASS }}
@@ -51,6 +61,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout --orphan apk
           git rm -rf --quiet .
-          git add -f EPA.apk
+          cp "$RUNNER_TEMP/imza-durumu.txt" imza-durumu.txt
+          git add -f EPA.apk imza-durumu.txt
           git commit -m "EPA APK (derleme ${{ github.run_number }})"
           git push -f origin apk
