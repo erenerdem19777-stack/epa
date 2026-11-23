@@ -1,0 +1,25 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.epa.akademi'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.epa.akademi'
+        minSdk 24
+        targetSdk 34
+        versionCode 5
+        versionName '1.4'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    androidResources {
+        noCompress 'html'
+    }
+}
