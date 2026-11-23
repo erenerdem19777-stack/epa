@@ -25,19 +25,33 @@ jobs:
           KS: ${{ secrets.EPA_KEYSTORE_B64 }}
           KP: ${{ secrets.EPA_KEYSTORE_PASS }}
         run: |
+          # Dosyanın tamamı tek bir gizli değişkene yapıştırıldıysa şifreyi ve anahtarı içinden ayıkla
+          ALL="$KP"$'\n'"$KS"
+          if [ ${#KP} -gt 100 ] || [ -z "$KS" ]; then
+            P2=$(printf '%s\n' "$ALL" | tr -d '\r' | grep -A2 'EPA_KEYSTORE_PASS' | grep -vE 'Name:|Secret' | head -1 | tr -d ' ')
+            K2=$(printf '%s\n' "$ALL" | tr -d '\r' | grep -E '^[[:space:]]*[A-Za-z0-9+/=]{1000,}[[:space:]]*$' | head -1 | tr -d ' ')
+            [ -n "$P2" ] && KP="$P2"
+            [ -n "$K2" ] && KS="$K2"
+          fi
+          [ -n "$KP" ] && echo "::add-mask::$KP"
           {
-            echo "EPA_KEYSTORE_B64 uzunluk: ${#KS}"
-            echo "EPA_KEYSTORE_PASS uzunluk: ${#KP}"
+            echo "anahtar uzunluk: ${#KS}"
+            echo "şifre uzunluk: ${#KP}"
           } > "$RUNNER_TEMP/imza-durumu.txt"
-          if [ -n "$KS" ]; then
-            printf '%s' "$KS" | tr -d ' \r\n' | base64 -d > "$RUNNER_TEMP/epa.keystore" && echo "anahtar dosyası: $(stat -c%s "$RUNNER_TEMP/epa.keystore") bayt" >> "$RUNNER_TEMP/imza-durumu.txt" || echo "anahtar çözülemedi" >> "$RUNNER_TEMP/imza-durumu.txt"
-            if [ -n "$KP" ] && keytool -list -keystore "$RUNNER_TEMP/epa.keystore" -storepass "$KP" >/dev/null 2>&1; then echo "anahtar ve şifre: uyumlu" >> "$RUNNER_TEMP/imza-durumu.txt"; else echo "anahtar ve şifre: UYUMSUZ ya da eksik" >> "$RUNNER_TEMP/imza-durumu.txt"; fi
-            echo "EPA_KEYSTORE_PATH=$RUNNER_TEMP/epa.keystore" >> "$GITHUB_ENV"
+          if [ -n "$KS" ] && [ -n "$KP" ]; then
+            printf '%s' "$KS" | tr -d ' \r\n' | base64 -d > "$RUNNER_TEMP/epa.keystore" 2>/dev/null
+            if keytool -list -keystore "$RUNNER_TEMP/epa.keystore" -storepass "$KP" >/dev/null 2>&1; then
+              echo "durum: SABİT ANAHTAR KULLANILIYOR" >> "$RUNNER_TEMP/imza-durumu.txt"
+              echo "EPA_KEYSTORE_PATH=$RUNNER_TEMP/epa.keystore" >> "$GITHUB_ENV"
+              echo "EPA_KEYSTORE_PASS=$KP" >> "$GITHUB_ENV"
+            else
+              echo "durum: anahtar ve şifre uyumsuz, varsayılan anahtar kullanıldı" >> "$RUNNER_TEMP/imza-durumu.txt"
+            fi
+          else
+            echo "durum: gizli değişken eksik, varsayılan anahtar kullanıldı" >> "$RUNNER_TEMP/imza-durumu.txt"
           fi
           cat "$RUNNER_TEMP/imza-durumu.txt"
       - name: APK derle
-        env:
-          EPA_KEYSTORE_PASS: ${{ secrets.EPA_KEYSTORE_PASS }}
         run: gradle assembleDebug --no-daemon
       - name: APK'yı yeniden adlandır
         run: cp app/build/outputs/apk/debug/app-debug.apk EPA.apk
