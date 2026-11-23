@@ -11,11 +11,21 @@ head = ('<script>window.EPA_PWA=1</script>\n'
         '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n'
         '<meta name="apple-mobile-web-app-title" content="EPA">\n'
         '<meta name="theme-color" content="#111111">\n'
-        '<meta name="format-detection" content="telephone=no">\n')
+        '<meta name="format-detection" content="telephone=no">\n'
+        '<meta name="description" content="EP Academy Sport & Performance · akademi yönetim uygulaması. iPhone\'da Safari ile açıp Paylaş › Ana Ekrana Ekle.">\n'
+        '<meta property="og:type" content="website">\n'
+        '<meta property="og:site_name" content="EPA">\n'
+        '<meta property="og:title" content="EPA · EP Academy Sport & Performance">\n'
+        '<meta property="og:description" content="Akademi yönetim uygulaması. iPhone\'da Safari ile açın, Paylaş › Ana Ekrana Ekle.">\n'
+        '<meta property="og:url" content="https://erenerdem19777-stack.github.io/epa/">\n'
+        '<meta property="og:image" content="https://erenerdem19777-stack.github.io/epa/og-image.png">\n'
+        '<meta property="og:image:width" content="1200">\n'
+        '<meta property="og:image:height" content="630">\n'
+        '<meta name="twitter:card" content="summary_large_image">\n')
 assert '<title>' in h
 h = h.replace('<title>', head + '<title>', 1)
 open('site/index.html', 'w', encoding='utf-8').write(h)
-for f in ('manifest.webmanifest', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'):
+for f in ('manifest.webmanifest', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'og-image.png'):
     shutil.copy('pwa/' + f, 'site/' + f)
 open('site/sw.js', 'w').write(open('pwa/sw.js').read().replace('__VERSION__', ver))
 for f in ('jspdf.umd.min.js', 'html2canvas.min.js'):
