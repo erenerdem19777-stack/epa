@@ -291,7 +291,7 @@ function lockScreen(){
   const first=!hasUsers(),hasData=Object.keys(S.players).length>0;
   const iosHint=window.EPA_PWA&&/iphone|ipad|ipod/i.test(navigator.userAgent)&&!navigator.standalone?`<div class="card" style="text-align:left;margin-bottom:12px;border-color:#ffd100"><b>iPhone'a uygulama olarak ekleyin</b><p class="small" style="margin:6px 0 0">Safari'de alttaki <b>Paylaş</b> düğmesine (kare ve yukarı ok) dokunun, <b>Ana Ekrana Ekle</b>'yi seçin. Sonra EPA'yı ana ekrandaki logodan açın; kayıtlar orada tutulur.</p></div>`:'';
   el.innerHTML=`<div class="lk">${iosHint}<img src="${LOGO}" alt="" width="104" height="104"><h1>${esc(S.settings.name||'EPA')}</h1>
-   ${first?`<p class="mute" style="margin:2px 0 18px">EPA'ya hoş geldiniz. Bu telefonu nasıl kuruyorsunuz?</p>
+   ${first?`<div style="height:16px"></div>
     <form id="setupF" class="card" style="text-align:left"><h3>Yönetici hesabı oluştur</h3><p class="small mute" style="margin:4px 0 10px">Akademi sahibi için. ${hasData?'Telefondaki mevcut kayıtlarınız korunur.':''}</p>
      <label>Ad soyad<input name="name" required autocomplete="name"></label><label>Kullanıcı adı<input name="u" required autocapitalize="none" autocomplete="username"></label>
      <label>Şifre (en az 6 karakter)<input name="p" type="password" required minlength="6" autocomplete="new-password"></label><label>Şifre tekrar<input name="p2" type="password" required minlength="6" autocomplete="new-password"></label>
