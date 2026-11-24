@@ -1276,7 +1276,7 @@ window.addEventListener('hashchange',render);
 
 /* ---------- başlat ---------- */
 loadLocal();restoreSession();render();
-if(window.EPA_PWA){try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{})}
+if(window.EPA_PWA){try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}if('serviceWorker'in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{try{r.update()}catch(e){}}).catch(()=>{});let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!rl&&!USER){rl=true;location.reload()}})}}
 window.epaPaused=()=>{HIDDEN=Date.now()};window.epaResumed=()=>{if(USER&&HIDDEN&&Date.now()-HIDDEN>5*60e3)lockApp()};
 const setSync=(t)=>$('#sync').textContent=t;
 setSync('Yerel kayıt');
