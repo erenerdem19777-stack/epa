@@ -1,0 +1,3 @@
+anahtar uzunluk: 3524
+şifre uzunluk: 24
+durum: SABİT ANAHTAR KULLANILIYOR
