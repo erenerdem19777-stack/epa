@@ -296,8 +296,7 @@ function lockScreen(){
      <label>Ad soyad<input name="name" required autocomplete="name"></label><label>Kullanıcı adı<input name="u" required autocapitalize="none" autocomplete="username"></label>
      <label>Şifre (en az 6 karakter)<input name="p" type="password" required minlength="6" autocomplete="new-password"></label><label>Şifre tekrar<input name="p2" type="password" required minlength="6" autocomplete="new-password"></label>
      <button class="p" style="width:100%;justify-content:center;margin-top:12px">Hesabı oluştur</button></form>
-    <div class="card" style="text-align:left;margin-top:12px"><h3>Dosyadan kur</h3><p class="small mute" style="margin:4px 0 10px"><b>Telefon değiştiyse:</b> WhatsApp'taki son EPA kayıt dosyasını ya da tam yedeği seçin; kayıtlar ve hesabınız geri gelir.<br><b>Yardımcıysanız:</b> yöneticinin gönderdiği yardımcı dosyasını seçin.</p>
-     <label class="btn" style="width:100%;justify-content:center">Dosya seç<input type="file" id="setupIn" accept=".json,application/json,text/plain,*/*" style="display:none"></label></div>`
+    <label style="display:inline-block;margin-top:16px;font-size:14px;color:var(--mute);text-decoration:underline;cursor:pointer;min-height:44px;line-height:44px">Yedekten yükle ya da yardımcı kurulumu<input type="file" id="setupIn" accept=".json,application/json,text/plain,*/*" style="display:none"></label>`
    :`<p class="mute" style="margin:2px 0 18px">Devam etmek için giriş yapın</p>
     <form id="loginF" class="card" style="text-align:left"><label>Kullanıcı adı<input name="u" id="lu" required autocapitalize="none" autocomplete="username"></label>
      <label>Şifre<input name="p" type="password" required autocomplete="current-password"></label><p class="small bad" id="lerr" style="min-height:18px;margin:6px 0 0"></p>
