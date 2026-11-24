@@ -208,7 +208,8 @@ async function mergeIn(d){
     if(loc&&(loc.upd||'')<=t){delete S[c][id];dels.push([c,id]);st.del++}
     if(!S.deleted[key]||S.deleted[key]<t)S.deleted[key]=t;
   }
-  if(!d.pkg&&d.settings&&(d.settings.upd||'')>(S.settings.upd||'')){S.settings={...DEF,...d.settings};if(cloud){try{await db.doc('settings/main').set(S.settings)}catch(e){}}}
+  if(!d.pkg&&d.settings&&(d.settings.upd||'')>(S.settings.upd||'')){const lu=S.settings.users||{},lr=S.settings.recovery;S.settings={...DEF,...d.settings,users:{...(d.settings.users||{}),...lu},...(lr?{recovery:lr}:{})};if(cloud){try{await db.doc('settings/main').set(S.settings)}catch(e){}}}
+  else if(!d.pkg&&d.settings&&d.settings.users){const add=Object.fromEntries(Object.entries(d.settings.users).filter(([k])=>!(S.settings.users||{})[k]));if(Object.keys(add).length)S.settings={...S.settings,users:{...(S.settings.users||{}),...add}}}
   if(cloud){for(const [c,id] of writes)await writeDoc(c,id,S[c][id]);for(const [c,id] of dels){try{await db.collection(c).doc(id).delete()}catch(e){}}}
   else saveLocal();
   SYNC.received.unshift({from:from||'Bilinmeyen cihaz',sent:sentAt||'',at:nowISO(),...st});SYNC.received=SYNC.received.slice(0,20);saveSync();

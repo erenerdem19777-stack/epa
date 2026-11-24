@@ -10,8 +10,8 @@ android {
         applicationId 'com.epa.akademi'
         minSdk 24
         targetSdk 34
-        versionCode 7
-        versionName '1.5'
+        versionCode 8
+        versionName '1.6'
     }
 
     // Sabit imza: anahtar depoda DEĞİL, GitHub Secrets'ta durur (EPA_KEYSTORE_B64, EPA_KEYSTORE_PASS).
